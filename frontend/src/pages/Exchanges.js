@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getExchanges } from '../services/api';
+import LoadingSpinner from '../components/LoadingSpinner';
+import ErrorMessage from '../components/ErrorMessage';
 
 function Exchanges() {
   const [exchanges, setExchanges] = useState([]);
@@ -12,17 +14,18 @@ function Exchanges() {
 
   const fetchExchanges = async () => {
     try {
+      setLoading(true);
       const data = await getExchanges();
       setExchanges(data);
       setLoading(false);
     } catch (err) {
-      setError('Failed to fetch exchanges');
+      setError('Failed to fetch exchanges. Please try again later.');
       setLoading(false);
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading) return <LoadingSpinner />;
+  if (error) return <ErrorMessage message={error} />;
 
   return (
     <div className="container">
