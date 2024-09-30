@@ -1,57 +1,26 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:5000/api';
-
-export const getExchanges = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/exchanges`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching exchanges:', error);
-    throw error;
-  }
-};
-
-export const calculateRebate = async (data) => {
-  try {
-    const response = await axios.post(`${API_URL}/rebates/calculate`, data);
-    return response.data;
-  } catch (error) {
-    console.error('Error calculating rebate:', error);
-    throw error;
-  }
-};
-
-export const login = async (credentials) => {
-  try {
-    const response = await axios.post(`${API_URL}/auth/login`, credentials);
-    return response.data;
-  } catch (error) {
-    console.error('Login error:', error);
-    throw error;
-  }
-};
-
-export const register = async (userData) => {
-  try {
-    const response = await axios.post(`${API_URL}/auth/register`, userData);
-    return response.data;
-  } catch (error) {
-    console.error('Registration error:', error);
-    throw error;
-  }
-};
-
 export const getUserDashboard = async () => {
   try {
-    const response = await axios.get(`${API_URL}/users/dashboard`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    });
+    // This is a mock implementation. In a real app, you would fetch this data from your backend.
+    const response = {
+      data: {
+        username: "JohnDoe",
+        totalTrades: 50,
+        totalVolume: 100000,
+        totalRebates: 500,
+        recentTrades: [
+          { date: "2023-05-01", exchange: "Binance", volume: 1000, rebate: 5 },
+          { date: "2023-05-02", exchange: "Coinbase", volume: 2000, rebate: 10 },
+          { date: "2023-05-03", exchange: "Kraken", volume: 1500, rebate: 7.5 },
+          { date: "2023-05-04", exchange: "Binance", volume: 3000, rebate: 15 },
+          { date: "2023-05-05", exchange: "Coinbase", volume: 2500, rebate: 12.5 },
+          { date: "2023-05-06", exchange: "Kraken", volume: 1800, rebate: 9 },
+          { date: "2023-05-07", exchange: "Binance", volume: 2200, rebate: 11 },
+        ]
+      }
+    };
     return response.data;
   } catch (error) {
     console.error('Error fetching user dashboard:', error);
     throw error;
   }
 };
-
-// Add more API calls as needed
