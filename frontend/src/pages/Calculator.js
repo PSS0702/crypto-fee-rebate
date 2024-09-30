@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getExchanges, calculateRebate } from '../services/api';
+import LoadingSpinner from '../components/LoadingSpinner';
+import ErrorMessage from '../components/ErrorMessage';
+import { Typography, TextField, Button, Select, MenuItem, FormControl, InputLabel, Paper } from '@material-ui/core';
 
 function Calculator() {
   const [exchanges, setExchanges] = useState([]);
@@ -38,46 +41,45 @@ function Calculator() {
     setLoading(false);
   };
 
+  if (loading) return <LoadingSpinner />;
+
   return (
-    <div className="container">
-      <h2>Rebate Calculator</h2>
+    <Paper style={{ padding: '20px', margin: '20px' }}>
+      <Typography variant="h4" gutterBottom>Rebate Calculator</Typography>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="exchange">Select Exchange:</label>
-          <select
-            id="exchange"
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="exchange-select-label">Select Exchange</InputLabel>
+          <Select
+            labelId="exchange-select-label"
             value={selectedExchange}
             onChange={(e) => setSelectedExchange(e.target.value)}
             required
           >
-            <option value="">Choose an exchange</option>
             {exchanges.map((exchange) => (
-              <option key={exchange._id} value={exchange._id}>{exchange.name}</option>
+              <MenuItem key={exchange._id} value={exchange._id}>{exchange.name}</MenuItem>
             ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="volume">Trade Volume (USD):</label>
-          <input
-            id="volume"
-            type="number"
-            value={tradeVolume}
-            onChange={(e) => setTradeVolume(e.target.value)}
-            required
-            min="0"
-          />
-        </div>
-        <button type="submit" disabled={loading}>Calculate Rebate</button>
+          </Select>
+        </FormControl>
+        <TextField
+          fullWidth
+          label="Trade Volume (USD)"
+          type="number"
+          value={tradeVolume}
+          onChange={(e) => setTradeVolume(e.target.value)}
+          required
+          margin="normal"
+        />
+        <Button type="submit" variant="contained" color="primary" disabled={loading}>
+          Calculate Rebate
+        </Button>
       </form>
-      {loading && <p>Calculating...</p>}
-      {error && <p className="error">{error}</p>}
+      {error && <ErrorMessage message={error} />}
       {rebate !== null && (
-        <div className="result">
-          <h3>Estimated Rebate:</h3>
-          <p>${rebate.toFixed(2)} USD</p>
-        </div>
+        <Typography variant="h6" style={{ marginTop: '20px' }}>
+          Estimated Rebate: ${rebate.toFixed(2)} USD
+        </Typography>
       )}
-    </div>
+    </Paper>
   );
 }
 
