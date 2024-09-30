@@ -59,3 +59,21 @@ header a:hover {
   color: #ffffff;
   font-weight: bold;
 }
+@media(max-width: 768px) {
+  header #branding,
+  header nav,
+  header nav li,
+  .features .feature {
+    float: none;
+    text-align: center;
+    width: 100%;
+  }
+
+  header {
+    padding-bottom: 20px;
+  }
+
+  .container {
+    width: 95%;
+  }
+}
