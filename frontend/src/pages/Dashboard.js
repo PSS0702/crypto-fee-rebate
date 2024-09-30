@@ -3,6 +3,7 @@ import { getUserDashboard } from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import { Typography, Paper, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 function Dashboard() {
   const [dashboardData, setDashboardData] = useState(null);
@@ -26,6 +27,26 @@ function Dashboard() {
 
   if (loading) return <LoadingSpinner />;
   if (error) return <ErrorMessage message={error} />;
+
+  // Prepare data for the line chart
+  const lineChartData = dashboardData ? dashboardData.recentTrades.map(trade => ({
+    date: new Date(trade.date).toLocaleDateString(),
+    volume: trade.volume,
+    rebate: trade.rebate
+  })) : [];
+
+  // Prepare data for the pie chart
+  const pieChartData = dashboardData ? dashboardData.recentTrades.reduce((acc, trade) => {
+    const existingExchange = acc.find(item => item.name === trade.exchange);
+    if (existingExchange) {
+      existingExchange.value += trade.volume;
+    } else {
+      acc.push({ name: trade.exchange, value: trade.volume });
+    }
+    return acc;
+  }, []) : [];
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
   return (
     <div style={{ padding: '20px' }}>
@@ -53,6 +74,46 @@ function Dashboard() {
               </Paper>
             </Grid>
           </Grid>
+
+          <Typography variant="h5" style={{ marginTop: '40px', marginBottom: '20px' }}>Trading Activity</Typography>
+          <Paper style={{ padding: '20px' }}>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={lineChartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis yAxisId="left" />
+                <YAxis yAxisId="right" orientation="right" />
+                <Tooltip />
+                <Legend />
+                <Line yAxisId="left" type="monotone" dataKey="volume" stroke="#8884d8" name="Trade Volume" />
+                <Line yAxisId="right" type="monotone" dataKey="rebate" stroke="#82ca9d" name="Rebate" />
+              </LineChart>
+            </ResponsiveContainer>
+          </Paper>
+
+          <Typography variant="h5" style={{ marginTop: '40px', marginBottom: '20px' }}>Volume by Exchange</Typography>
+          <Paper style={{ padding: '20px' }}>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={pieChartData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                >
+                  {pieChartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </Paper>
+
           <Typography variant="h5" style={{ marginTop: '40px', marginBottom: '20px' }}>Recent Trades</Typography>
           <TableContainer component={Paper}>
             <Table>
