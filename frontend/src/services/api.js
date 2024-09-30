@@ -22,7 +22,6 @@ export const calculateRebate = async (data) => {
   }
 };
 
-// 새로운 함수들을 여기에 추가합니다
 export const login = async (credentials) => {
   try {
     const response = await axios.post(`${API_URL}/auth/login`, credentials);
@@ -43,14 +42,16 @@ export const register = async (userData) => {
   }
 };
 
-// Add more API calls as needed
-
-export const calculateRebate = async (data) => {
+export const getUserDashboard = async () => {
   try {
-    const response = await axios.post(`${API_URL}/rebates/calculate`, data);
+    const response = await axios.get(`${API_URL}/users/dashboard`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    });
     return response.data;
   } catch (error) {
-    console.error('Error calculating rebate:', error);
+    console.error('Error fetching user dashboard:', error);
     throw error;
   }
 };
+
+// Add more API calls as needed
