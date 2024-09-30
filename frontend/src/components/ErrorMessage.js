@@ -1,10 +1,11 @@
 import React from 'react';
+import { Typography, Paper } from '@material-ui/core';
 
 function ErrorMessage({ message }) {
   return (
-    <div className="error-message">
-      <p>{message}</p>
-    </div>
+    <Paper style={{ padding: '20px', margin: '20px', backgroundColor: '#ffebee' }}>
+      <Typography color="error">{message}</Typography>
+    </Paper>
   );
 }
 
