@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getExchanges } from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
+import { Typography, Card, CardContent, Grid, List, ListItem, ListItemText } from '@material-ui/core';
 
 function Exchanges() {
   const [exchanges, setExchanges] = useState([]);
@@ -28,22 +29,30 @@ function Exchanges() {
   if (error) return <ErrorMessage message={error} />;
 
   return (
-    <div className="container">
-      <h2>Supported Exchanges</h2>
-      <div className="exchange-list">
+    <div style={{ padding: '20px' }}>
+      <Typography variant="h4" gutterBottom>Supported Exchanges</Typography>
+      <Grid container spacing={3}>
         {exchanges.map((exchange) => (
-          <div key={exchange._id} className="exchange-item">
-            <h3>{exchange.name}</h3>
-            <p>URL: <a href={exchange.url} target="_blank" rel="noopener noreferrer">{exchange.url}</a></p>
-            <h4>Fee Structure:</h4>
-            <ul>
-              {Object.entries(exchange.feeStructure).map(([level, fee]) => (
-                <li key={level}>{level}: {fee}%</li>
-              ))}
-            </ul>
-          </div>
+          <Grid item xs={12} sm={6} md={4} key={exchange._id}>
+            <Card>
+              <CardContent>
+                <Typography variant="h5" component="h2">{exchange.name}</Typography>
+                <Typography color="textSecondary" gutterBottom>
+                  URL: <a href={exchange.url} target="_blank" rel="noopener noreferrer">{exchange.url}</a>
+                </Typography>
+                <Typography variant="h6">Fee Structure:</Typography>
+                <List dense>
+                  {Object.entries(exchange.feeStructure).map(([level, fee]) => (
+                    <ListItem key={level}>
+                      <ListItemText primary={`${level}: ${fee}%`} />
+                    </ListItem>
+                  ))}
+                </List>
+              </CardContent>
+            </Card>
+          </Grid>
         ))}
-      </div>
+      </Grid>
     </div>
   );
 }
