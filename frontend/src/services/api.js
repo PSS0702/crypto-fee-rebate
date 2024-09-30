@@ -44,3 +44,13 @@ export const register = async (userData) => {
 };
 
 // Add more API calls as needed
+
+export const calculateRebate = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/rebates/calculate`, data);
+    return response.data;
+  } catch (error) {
+    console.error('Error calculating rebate:', error);
+    throw error;
+  }
+};
