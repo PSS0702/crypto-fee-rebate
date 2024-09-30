@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Exchanges from './pages/Exchanges';
 import Calculator from './pages/Calculator';
 import Dashboard from './pages/Dashboard';
+import Auth from './components/Auth'; // 새로 추가된 import
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/exchanges" component={Exchanges} />
           <Route path="/calculator" component={Calculator} />
           <Route path="/dashboard" component={Dashboard} />
+          <Route path="/auth" component={Auth} /> // 새로 추가된 라우트
         </Switch>
         <Footer />
       </div>
