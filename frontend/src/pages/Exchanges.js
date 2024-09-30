@@ -25,13 +25,22 @@ function Exchanges() {
   if (error) return <div>{error}</div>;
 
   return (
-    <div>
+    <div className="container">
       <h2>Supported Exchanges</h2>
-      <ul>
+      <div className="exchange-list">
         {exchanges.map((exchange) => (
-          <li key={exchange._id}>{exchange.name}</li>
+          <div key={exchange._id} className="exchange-item">
+            <h3>{exchange.name}</h3>
+            <p>URL: <a href={exchange.url} target="_blank" rel="noopener noreferrer">{exchange.url}</a></p>
+            <h4>Fee Structure:</h4>
+            <ul>
+              {Object.entries(exchange.feeStructure).map(([level, fee]) => (
+                <li key={level}>{level}: {fee}%</li>
+              ))}
+            </ul>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
