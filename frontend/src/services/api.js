@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// getUserDashboard 함수
 export const getUserDashboard = async () => {
   try {
     if (process.env.NODE_ENV === 'development') {
@@ -33,14 +34,24 @@ export const getUserDashboard = async () => {
   }
 };
 
-// login 함수 추가
+// login 함수
 export const login = async (username, password) => {
   try {
-    // 실제 로그인 API 호출
     const response = await axios.post('/api/login', { username, password });
     return response.data;
   } catch (error) {
     console.error('Login error:', error);
+    throw error;
+  }
+};
+
+// register 함수 추가
+export const register = async (username, password) => {
+  try {
+    const response = await axios.post('/api/register', { username, password });
+    return response.data;
+  } catch (error) {
+    console.error('Register error:', error);
     throw error;
   }
 };
