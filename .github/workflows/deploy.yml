@@ -14,7 +14,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '20'  # Use Node.js 20
 
       - name: Install and Build 🔧
         run: |
@@ -28,3 +28,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: frontend/build # The folder the action should deploy.
+          branch: gh-pages # The branch the action should deploy to.
+          token: ${{ secrets.GITHUB_TOKEN }}  # Use GITHUB_TOKEN
