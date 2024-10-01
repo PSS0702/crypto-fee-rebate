@@ -32,3 +32,15 @@ export const getUserDashboard = async () => {
     throw error;
   }
 };
+
+// login 함수 추가
+export const login = async (username, password) => {
+  try {
+    // 실제 로그인 API 호출
+    const response = await axios.post('/api/login', { username, password });
+    return response.data;
+  } catch (error) {
+    console.error('Login error:', error);
+    throw error;
+  }
+};
