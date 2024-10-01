@@ -4,7 +4,6 @@ import axios from 'axios';
 export const getUserDashboard = async () => {
   try {
     if (process.env.NODE_ENV === 'development') {
-      // 개발 환경에서는 모의 데이터를 사용
       const mockResponse = {
         data: {
           username: "JohnDoe",
@@ -24,7 +23,6 @@ export const getUserDashboard = async () => {
       };
       return mockResponse.data;
     } else {
-      // 프로덕션 환경에서는 실제 API 요청
       const response = await axios.get('/api/user-dashboard');
       return response.data;
     }
@@ -56,13 +54,24 @@ export const register = async (username, password) => {
   }
 };
 
-// getExchanges 함수 추가
+// getExchanges 함수
 export const getExchanges = async () => {
   try {
     const response = await axios.get('/api/exchanges');
     return response.data;
   } catch (error) {
     console.error('Error fetching exchanges:', error);
+    throw error;
+  }
+};
+
+// calculateRebate 함수 추가
+export const calculateRebate = async (volume) => {
+  try {
+    const response = await axios.post('/api/calculate-rebate', { volume });
+    return response.data;
+  } catch (error) {
+    console.error('Error calculating rebate:', error);
     throw error;
   }
 };
