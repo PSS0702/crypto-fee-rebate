@@ -45,13 +45,24 @@ export const login = async (username, password) => {
   }
 };
 
-// register 함수 추가
+// register 함수
 export const register = async (username, password) => {
   try {
     const response = await axios.post('/api/register', { username, password });
     return response.data;
   } catch (error) {
     console.error('Register error:', error);
+    throw error;
+  }
+};
+
+// getExchanges 함수 추가
+export const getExchanges = async () => {
+  try {
+    const response = await axios.get('/api/exchanges');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching exchanges:', error);
     throw error;
   }
 };
