@@ -1,22 +1,12 @@
 import React from 'react';
-import { Typography, Container, makeStyles } from '@material-ui/core';
-
-const useStyles = makeStyles((theme) => ({
-  footer: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(6, 0),
-    marginTop: 'auto',
-  },
-}));
+import { Typography, Container } from '@mui/material';  // 수정된 import 경로
 
 function Footer() {
-  const classes = useStyles();
-
   return (
-    <footer className={classes.footer}>
-      <Container maxWidth="lg">
-        <Typography variant="body1" align="center">
-          © {new Date().getFullYear()} Crypto Fee Rebate. All rights reserved.
+    <footer>
+      <Container>
+        <Typography variant="body1">
+          © 2024 Crypto Fee Rebate
         </Typography>
       </Container>
     </footer>
