@@ -1,18 +1,14 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, makeStyles } from '@material-ui/core';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
+  logo: {
+    maxHeight: '50px',
+    marginRight: theme.spacing(2),
   },
   title: {
     flexGrow: 1,
-  },
-  link: {
-    color: 'white',
-    textDecoration: 'none',
-    marginLeft: theme.spacing(2),
   },
 }));
 
@@ -22,13 +18,15 @@ function Header() {
   return (
     <AppBar position="static">
       <Toolbar>
+        <Link to="/">
+          <img src="/path/to/your/logo.png" alt="Logo" className={classes.logo} />
+        </Link>
         <Typography variant="h6" className={classes.title}>
           Crypto Fee Rebate
         </Typography>
-        <Button color="inherit" component={RouterLink} to="/">Home</Button>
-        <Button color="inherit" component={RouterLink} to="/exchanges">Exchanges</Button>
-        <Button color="inherit" component={RouterLink} to="/calculator">Calculator</Button>
-        <Button color="inherit" component={RouterLink} to="/dashboard">Dashboard</Button>
+        <Button color="inherit" component={Link} to="/exchanges">거래소</Button>
+        <Button color="inherit" component={Link} to="/events">이벤트</Button>
+        <Button color="inherit" component={Link} to="/login">로그인</Button>
       </Toolbar>
     </AppBar>
   );
