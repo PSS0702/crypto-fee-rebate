@@ -1,161 +1,127 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { getUserDashboard } from '../services/api';
-import socketService from '../services/socketService';
-import LoadingSpinner from '../components/LoadingSpinner';
-import ErrorMessage from '../components/ErrorMessage';
-import { Typography, Paper, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import React from 'react';
+import {
+  Container,
+  Typography,
+  Grid,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  makeStyles
+} from '@material-ui/core';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from 'recharts';
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+  },
+  paper: {
+    padding: theme.spacing(2),
+    display: 'flex',
+    overflow: 'auto',
+    flexDirection: 'column',
+  },
+  fixedHeight: {
+    height: 240,
+  },
+}));
+
+// Dummy data for the chart
+const chartData = [
+  { name: 'Jan', volume: 4000, rebate: 240 },
+  { name: 'Feb', volume: 3000, rebate: 180 },
+  { name: 'Mar', volume: 5000, rebate: 300 },
+  { name: 'Apr', volume: 2780, rebate: 167 },
+  { name: 'May', volume: 1890, rebate: 113 },
+  { name: 'Jun', volume: 2390, rebate: 143 },
+];
+
+// Dummy data for recent trades
+const recentTrades = [
+  { id: 1, date: '2023-06-01', exchange: 'Binance', volume: 1000, rebate: 2.5 },
+  { id: 2, date: '2023-06-02', exchange: 'Coinbase', volume: 1500, rebate: 3.75 },
+  { id: 3, date: '2023-06-03', exchange: 'Kraken', volume: 800, rebate: 2 },
+];
 
 function Dashboard() {
-  const [dashboardData, setDashboardData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const fetchDashboardData = useCallback(async () => {
-    try {
-      const data = await getUserDashboard();
-      setDashboardData(data);
-      setLoading(false);
-    } catch (err) {
-      setError('Failed to fetch dashboard data');
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchDashboardData();
-
-    socketService.connect();
-    socketService.on('dashboardUpdate', (data) => {
-      setDashboardData(prevData => ({
-        ...prevData,
-        ...data
-      }));
-    });
-
-    return () => {
-      socketService.disconnect();
-    };
-  }, [fetchDashboardData]);
-
-  const lineChartData = useMemo(() => {
-    return dashboardData ? dashboardData.recentTrades.map(trade => ({
-      date: new Date(trade.date).toLocaleDateString(),
-      volume: trade.volume,
-      rebate: trade.rebate
-    })) : [];
-  }, [dashboardData]);
-
-  const pieChartData = useMemo(() => {
-    return dashboardData ? dashboardData.recentTrades.reduce((acc, trade) => {
-      const existingExchange = acc.find(item => item.name === trade.exchange);
-      if (existingExchange) {
-        existingExchange.value += trade.volume;
-      } else {
-        acc.push({ name: trade.exchange, value: trade.volume });
-      }
-      return acc;
-    }, []) : [];
-  }, [dashboardData]);
-
-  if (loading) return <LoadingSpinner />;
-  if (error) return <ErrorMessage message={error} />;
-
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+  const classes = useStyles();
 
   return (
-    <div style={{ padding: '20px' }}>
-      <Typography variant="h4" gutterBottom>User Dashboard</Typography>
-      {dashboardData && (
-        <>
-          <Typography variant="h5">Welcome, {dashboardData.username}!</Typography>
-          <Grid container spacing={3} style={{ marginTop: '20px' }}>
-            <Grid item xs={12} sm={4}>
-              <Paper style={{ padding: '20px', textAlign: 'center' }}>
-                <Typography variant="h6">Total Trades</Typography>
-                <Typography variant="h4">{dashboardData.totalTrades}</Typography>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Paper style={{ padding: '20px', textAlign: 'center' }}>
-                <Typography variant="h6">Total Volume</Typography>
-                <Typography variant="h4">${dashboardData.totalVolume.toFixed(2)}</Typography>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Paper style={{ padding: '20px', textAlign: 'center' }}>
-                <Typography variant="h6">Total Rebates Earned</Typography>
-                <Typography variant="h4">${dashboardData.totalRebates.toFixed(2)}</Typography>
-              </Paper>
-            </Grid>
-          </Grid>
-
-          <Typography variant="h5" style={{ marginTop: '40px', marginBottom: '20px' }}>Trading Activity</Typography>
-          <Paper style={{ padding: '20px' }}>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={lineChartData}>
+    <Container maxWidth="lg" className={classes.container}>
+      <Typography variant="h4" gutterBottom>
+        Dashboard
+      </Typography>
+      <Grid container spacing={3}>
+        {/* Chart */}
+        <Grid item xs={12} md={8} lg={9}>
+          <Paper className={`${classes.paper} ${classes.fixedHeight}`}>
+            <Typography variant="h6">Trading Volume and Rebates</Typography>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={chartData}
+                margin={{
+                  top: 16,
+                  right: 16,
+                  bottom: 0,
+                  left: 24,
+                }}
+              >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis yAxisId="left" />
-                <YAxis yAxisId="right" orientation="right" />
+                <XAxis dataKey="name" />
+                <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+                <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
                 <Tooltip />
                 <Legend />
-                <Line yAxisId="left" type="monotone" dataKey="volume" stroke="#8884d8" name="Trade Volume" />
-                <Line yAxisId="right" type="monotone" dataKey="rebate" stroke="#82ca9d" name="Rebate" />
-              </LineChart>
+                <Bar yAxisId="left" dataKey="volume" fill="#8884d8" name="Volume" />
+                <Bar yAxisId="right" dataKey="rebate" fill="#82ca9d" name="Rebate" />
+              </BarChart>
             </ResponsiveContainer>
           </Paper>
-
-          <Typography variant="h5" style={{ marginTop: '40px', marginBottom: '20px' }}>Volume by Exchange</Typography>
-          <Paper style={{ padding: '20px' }}>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={pieChartData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                >
-                  {pieChartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </Paper>
-
-          <Typography variant="h5" style={{ marginTop: '40px', marginBottom: '20px' }}>Recent Trades</Typography>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Date</TableCell>
-                  <TableCell>Exchange</TableCell>
-                  <TableCell align="right">Volume</TableCell>
-                  <TableCell align="right">Rebate</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {dashboardData.recentTrades.map((trade, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{new Date(trade.date).toLocaleDateString()}</TableCell>
-                    <TableCell>{trade.exchange}</TableCell>
-                    <TableCell align="right">${trade.volume.toFixed(2)}</TableCell>
-                    <TableCell align="right">${trade.rebate.toFixed(2)}</TableCell>
+        </Grid>
+        {/* Recent trades */}
+        <Grid item xs={12}>
+          <Paper className={classes.paper}>
+            <Typography variant="h6">Recent Trades</Typography>
+            <TableContainer>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Date</TableCell>
+                    <TableCell>Exchange</TableCell>
+                    <TableCell align="right">Volume</TableCell>
+                    <TableCell align="right">Rebate</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </>
-      )}
-    </div>
+                </TableHead>
+                <TableBody>
+                  {recentTrades.map((trade) => (
+                    <TableRow key={trade.id}>
+                      <TableCell>{trade.date}</TableCell>
+                      <TableCell>{trade.exchange}</TableCell>
+                      <TableCell align="right">${trade.volume}</TableCell>
+                      <TableCell align="right">${trade.rebate}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </Grid>
+      </Grid>
+    </Container>
   );
 }
 
-export default React.memo(Dashboard);
+export default Dashboard;
