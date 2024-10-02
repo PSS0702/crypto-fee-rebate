@@ -8,6 +8,8 @@ import Home from './pages/Home';
 import Exchanges from './pages/Exchanges';
 import Calculator from './pages/Calculator';
 import Dashboard from './pages/Dashboard';
+import Events from './pages/Events';
+import Login from './components/Login';
 
 const theme = createTheme({
   palette: {
@@ -37,6 +39,8 @@ function App() {
           <Route path="/exchanges" component={Exchanges} />
           <Route path="/calculator" component={Calculator} />
           <Route path="/dashboard" component={Dashboard} />
+          <Route path="/events" component={Events} />
+          <Route path="/login" component={Login} />
         </Switch>
         <Footer />
       </Router>
