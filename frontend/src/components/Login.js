@@ -1,19 +1,21 @@
+// import KakaoLogin from 'react-kakao-login';  // 이 줄을 주석 처리
 import React from 'react';
-import KakaoLogin from 'react-kakao-login';
 
 function Login() {
-  const responseKakao = (response) => {
-    console.log(response);
-    // 여기서 백엔드로 토큰을 보내 사용자 정보를 저장하거나 검증합니다.
-  }
+  // const responseKakao = (response) => {
+  //   console.log(response);
+  // }
 
   return (
-    <KakaoLogin
-      token={'your_app_key'}
-      onSuccess={responseKakao}
-      onFail={console.error}
-      onLogout={console.info}
-    />
+    <div>
+      <h2>Login Page</h2>
+      {/* <KakaoLogin
+        token={'your_app_key'}
+        onSuccess={responseKakao}
+        onFail={console.error}
+        onLogout={console.info}
+      /> */}
+    </div>
   );
 }
 
