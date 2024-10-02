@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Container, Typography } from '@mui/material';  // 수정된 import 경로
+import { Button, Container, Typography } from '@mui/material';
 
 function Exchanges() {
   return (
