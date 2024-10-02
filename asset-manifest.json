@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/crypto-fee-rebate/static/js/main.3b1cf633.js",
+    "main.js": "/crypto-fee-rebate/static/js/main.2aad79ad.js",
     "index.html": "/crypto-fee-rebate/index.html",
-    "main.3b1cf633.js.map": "/crypto-fee-rebate/static/js/main.3b1cf633.js.map"
+    "main.2aad79ad.js.map": "/crypto-fee-rebate/static/js/main.2aad79ad.js.map"
   },
   "entrypoints": [
-    "static/js/main.3b1cf633.js"
+    "static/js/main.2aad79ad.js"
   ]
 }
