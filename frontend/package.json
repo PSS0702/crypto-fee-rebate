@@ -4,8 +4,8 @@
   "private": true,
   "homepage": "https://pss0702.github.io/crypto-fee-rebate",
   "dependencies": {
-    "@material-ui/core": "^4.12.4",
-    "@material-ui/icons": "^4.11.3",
+    "@mui/material": "^5.12.3",  // Material UI 최신 버전으로 변경
+    "@mui/icons-material": "^5.12.3",  // Material UI 아이콘 최신 버전으로 변경
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^14.4.3",
@@ -15,7 +15,9 @@
     "react-router-dom": "^5.3.4",
     "react-scripts": "5.0.1",
     "recharts": "^2.4.3",
-    "socket.io-client": "^4.6.1"
+    "socket.io-client": "^4.6.1",
+    "ajv": "^8.11.0",  // ajv 최신 버전 추가
+    "ajv-keywords": "^6.0.0"  // ajv-keywords 최신 버전 추가
   },
   "scripts": {
     "start": "react-scripts start",
