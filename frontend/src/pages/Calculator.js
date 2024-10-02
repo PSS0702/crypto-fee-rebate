@@ -1,85 +1,118 @@
 import React, { useState, useEffect } from 'react';
-import { getExchanges, calculateRebate } from '../services/api';
-import LoadingSpinner from '../components/LoadingSpinner';
-import ErrorMessage from '../components/ErrorMessage';
-import { Typography, TextField, Button, Select, MenuItem, FormControl, InputLabel, Paper } from '@material-ui/core';
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Grid,
+  Paper,
+  makeStyles
+} from '@material-ui/core';
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+  },
+  paper: {
+    padding: theme.spacing(3),
+  },
+  formControl: {
+    minWidth: 120,
+    width: '100%',
+  },
+  submitButton: {
+    marginTop: theme.spacing(2),
+  },
+  result: {
+    marginTop: theme.spacing(3),
+  },
+}));
 
 function Calculator() {
+  const classes = useStyles();
   const [exchanges, setExchanges] = useState([]);
   const [selectedExchange, setSelectedExchange] = useState('');
   const [tradeVolume, setTradeVolume] = useState('');
   const [rebate, setRebate] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchExchanges();
+    // Fetch exchanges (using dummy data for now)
+    const dummyExchanges = [
+      { id: 1, name: 'Binance' },
+      { id: 2, name: 'Coinbase Pro' },
+      // Add more exchanges as needed
+    ];
+    setExchanges(dummyExchanges);
   }, []);
 
-  const fetchExchanges = async () => {
-    try {
-      const data = await getExchanges();
-      setExchanges(data);
-    } catch (err) {
-      setError('Failed to fetch exchanges');
-    }
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // This is where you would make an API call to calculate the rebate
+    // For now, we'll use a dummy calculation
+    const dummyRebate = (parseFloat(tradeVolume) * 0.001).toFixed(2);
+    setRebate(dummyRebate);
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await calculateRebate({
-        exchangeId: selectedExchange,
-        tradeVolume: parseFloat(tradeVolume)
-      });
-      setRebate(result.rebate);
-    } catch (err) {
-      setError('Failed to calculate rebate');
-    }
-    setLoading(false);
-  };
-
-  if (loading) return <LoadingSpinner />;
 
   return (
-    <Paper style={{ padding: '20px', margin: '20px' }}>
-      <Typography variant="h4" gutterBottom>Rebate Calculator</Typography>
-      <form onSubmit={handleSubmit}>
-        <FormControl fullWidth margin="normal">
-          <InputLabel id="exchange-select-label">Select Exchange</InputLabel>
-          <Select
-            labelId="exchange-select-label"
-            value={selectedExchange}
-            onChange={(e) => setSelectedExchange(e.target.value)}
-            required
+    <Container className={classes.container} maxWidth="md">
+      <Typography variant="h4" gutterBottom>
+        Rebate Calculator
+      </Typography>
+      <Paper className={classes.paper}>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <FormControl className={classes.formControl}>
+                <InputLabel id="exchange-select-label">Exchange</InputLabel>
+                <Select
+                  labelId="exchange-select-label"
+                  id="exchange-select"
+                  value={selectedExchange}
+                  onChange={(e) => setSelectedExchange(e.target.value)}
+                  required
+                >
+                  {exchanges.map((exchange) => (
+                    <MenuItem key={exchange.id} value={exchange.id}>
+                      {exchange.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Trade Volume (USD)"
+                type="number"
+                value={tradeVolume}
+                onChange={(e) => setTradeVolume(e.target.value)}
+                required
+              />
+            </Grid>
+          </Grid>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            className={classes.submitButton}
           >
-            {exchanges.map((exchange) => (
-              <MenuItem key={exchange._id} value={exchange._id}>{exchange.name}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <TextField
-          fullWidth
-          label="Trade Volume (USD)"
-          type="number"
-          value={tradeVolume}
-          onChange={(e) => setTradeVolume(e.target.value)}
-          required
-          margin="normal"
-        />
-        <Button type="submit" variant="contained" color="primary" disabled={loading}>
-          Calculate Rebate
-        </Button>
-      </form>
-      {error && <ErrorMessage message={error} />}
-      {rebate !== null && (
-        <Typography variant="h6" style={{ marginTop: '20px' }}>
-          Estimated Rebate: ${rebate.toFixed(2)} USD
-        </Typography>
-      )}
-    </Paper>
+            Calculate Rebate
+          </Button>
+        </form>
+        {rebate !== null && (
+          <div className={classes.result}>
+            <Typography variant="h6">
+              Estimated Rebate: ${rebate} USD
+            </Typography>
+          </div>
+        )}
+      </Paper>
+    </Container>
   );
 }
 
